@@ -2,7 +2,7 @@
 services:
   - type: web
     name: drss-laravel-app
-    env: php
+    env: docker
     region: oregon
     plan: free
     buildCommand: |
