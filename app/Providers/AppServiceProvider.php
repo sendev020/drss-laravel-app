@@ -23,6 +23,10 @@ public function register(): void
  */
 public function boot(): void
 {
+     // Active le HTTPS si l'app est derrière un proxy (Render le fait)
+        if (env('APP_ENV') === 'production') {
+            \URL::forceScheme('https');
+        }
 
 
     Route::model('role', Role::class);
