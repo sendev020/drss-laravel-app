@@ -38,6 +38,6 @@ services:
         value: qiBMCfYInxTOV03Hm7VMk68FPt1tKN3V
     disk:
       name: persistent-storage
-      mountPath: /var/www/storage/app/public
+      mountPath: /var/storage
       sizeGB: 1
 
