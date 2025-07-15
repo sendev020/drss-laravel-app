@@ -1,5 +1,5 @@
 # Étape 1 : Image de base PHP avec extensions nécessaires
-FROM php:8.2-fpm
+FROM php:8.2-cli
 
 # Installer les dépendances système
 RUN apt-get update && apt-get install -y \
@@ -15,7 +15,6 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     libjpeg-dev \
     libfreetype6-dev \
-    libmcrypt-dev \
     vim \
     && docker-php-ext-install pdo pdo_mysql zip mbstring exif pcntl bcmath gd
 
@@ -25,29 +24,29 @@ COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
 # Définir le répertoire de travail
 WORKDIR /var/www
 
-# Copier tous les fichiers de l'application
+# Copier les fichiers
 COPY . .
 
-# Installer les dépendances PHP de Laravel
+# Installer les dépendances Laravel
 RUN composer install --no-dev --optimize-autoloader
 
+# Copier .env si inexistant
+RUN cp .env.example .env || true
+
 # Donner les permissions nécessaires
-RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache \
-    && chmod -R 775 /var/www/storage /var/www/bootstrap/cache
+RUN chown -R www-data:www-data storage bootstrap/cache && chmod -R 775 storage bootstrap/cache
 
-RUN cp .env.example .env || touch .env
+# Générer la clé d’application
+RUN php artisan key:generate || true
 
-# Générer la clé d'application Laravel
-RUN php artisan key:generate
-
-# Créer le lien symbolique vers public/storage
+# Lier le dossier public/storage
 RUN php artisan storage:link || true
 
-# Lancer les migrations en mode production
+# Appliquer les migrations
 RUN php artisan migrate --force || true
 
-# Exposer le port 8000
+# Exposer le port que Render va détecter
 EXPOSE 10000
 
-# Commande de démarrage
-CMD ["sh", "-c", "php artisan serve --host=0.0.0.0 --port=${PORT:-10000}"]
+# Lancer le serveur Laravel
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=10000"]
