@@ -44,7 +44,6 @@ RUN php artisan storage:link || true
 
 # Appliquer les migrations
 RUN php artisan migrate --force || true
-RUN php artisan db:seed --force
 
 # Exposer le port que Render va détecter
 EXPOSE 10000
