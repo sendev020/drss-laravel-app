@@ -7,7 +7,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 
-class UserAndRolesSeeder extends Seeder
+class AdminUserSeeder extends Seeder
 {
     public function run(): void
     {
