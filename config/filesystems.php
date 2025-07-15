@@ -20,8 +20,8 @@ return [
             'url' => env('APP_URL') . '/storage',
             'visibility' => 'public',
             'throw' => false,
+            'report' => false,
         ],
-
 
         's3' => [
             'driver' => 's3',
@@ -35,12 +35,9 @@ return [
             'throw' => false,
             'report' => false,
         ],
-
     ],
 
     'links' => [
         public_path('storage') => env('FILESYSTEM_ROOT', storage_path('app/public')),
     ],
-
-
 ];
