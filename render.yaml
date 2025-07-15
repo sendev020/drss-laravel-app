@@ -5,6 +5,9 @@ services:
     env: docker
     region: oregon
     plan: free
+    ports:
+      - port: 10000
+        protocol: http
     buildCommand: |
       composer install --no-dev --optimize-autoloader
       php artisan config:cache
@@ -24,11 +27,9 @@ services:
       - key: FILESYSTEM_DISK
         value: public
       - key: DB_CONNECTION
-        value: mysql
+        value: pgsql
       - key: DB_HOST
         value: dpg-d1r84eodl3ps73f6asrg-a
-      - key: DB_PORT
-        value: 5432
       - key: DB_DATABASE
         value: drss
       - key: DB_USERNAME
@@ -37,8 +38,6 @@ services:
         value: qiBMCfYInxTOV03Hm7VMk68FPt1tKN3V
     disk:
       name: persistent-storage
-      mountPath: /var/storage
+      mountPath: /var/www/storage/app/public
       sizeGB: 1
-    ports:
-      - port: 10000
-        protocol: http
+
