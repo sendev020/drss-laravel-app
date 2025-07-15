@@ -27,19 +27,26 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a>
                 </li>
+                @hasanyrole('admin|secretaire|directeur')
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('courriers.index') }}">Courriers</a>
                 </li>
-                <li>
+                @endhasanyrole
+
+                @hasanyrole('admin|directeur|user')
+                <li class="nav-item">
                     <a class="nav-link" href="{{ route('rapports.index') }}">Rapports</a>
                 </li>
+                @endhasanyrole
+
+                @hasanyrole('admin|rh|directeur')
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('personnels.index') }}">Personnel</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('suivis.index') }}">Suivi du personnel</a>
                 </li>
-
+                @endhasanyrole
             </ul>
             <!-- Partie droite : utilisateur -->
             <ul class="navbar-nav ms-auto">
