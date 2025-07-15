@@ -16,13 +16,12 @@ return [
 
         'public' => [
             'driver' => 'local',
-            // 🔽 Utilise le chemin personnalisé pour Render OU fallback local
             'root' => env('FILESYSTEM_ROOT', storage_path('app/public')),
-            'url' => env('APP_URL').'/storage',
+            'url' => env('APP_URL') . '/storage',
             'visibility' => 'public',
             'throw' => false,
-            'report' => false,
         ],
+
 
         's3' => [
             'driver' => 's3',
@@ -40,8 +39,8 @@ return [
     ],
 
     'links' => [
-        // Ce lien sera créé par `php artisan storage:link`
         public_path('storage') => env('FILESYSTEM_ROOT', storage_path('app/public')),
     ],
+
 
 ];

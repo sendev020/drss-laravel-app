@@ -1,21 +1,14 @@
-# render.yaml
 services:
   - type: web
     name: drss-laravel-app
     env: docker
     region: oregon
     plan: free
-    ports:
-      - port: 10000
-        protocol: http
     buildCommand: |
       composer install --no-dev --optimize-autoloader
       php artisan config:cache
       php artisan route:cache
       php artisan view:cache
-      php artisan key:generate
-      php artisan migrate --force
-      php artisan storage:link
     startCommand: php artisan serve --host 0.0.0.0 --port 10000
     envVars:
       - key: APP_ENV
@@ -26,10 +19,14 @@ services:
         value: https://drss-laravel-app.onrender.com
       - key: FILESYSTEM_DISK
         value: public
+      - key: FILESYSTEM_ROOT
+        value: /var/storage
       - key: DB_CONNECTION
         value: pgsql
       - key: DB_HOST
         value: dpg-d1r84eodl3ps73f6asrg-a
+      - key: DB_PORT
+        value: 5432
       - key: DB_DATABASE
         value: drss
       - key: DB_USERNAME
@@ -40,4 +37,3 @@ services:
       name: persistent-storage
       mountPath: /var/storage
       sizeGB: 1
-

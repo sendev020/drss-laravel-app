@@ -49,5 +49,8 @@ RUN php artisan db:seed --force || true
 # Exposer le port que Render va détecter
 EXPOSE 10000
 
+# Lier le stockage Render à Laravel
+RUN rm -rf storage/app/public && ln -s /var/storage storage/app/public
+
 # Lancer le serveur Laravel
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=10000"]
