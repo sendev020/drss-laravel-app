@@ -26,16 +26,19 @@ services:
       - key: DB_CONNECTION
         value: mysql
       - key: DB_HOST
-        value: YOUR_DB_HOST
+        value: dpg-d1r84eodl3ps73f6asrg-a
       - key: DB_PORT
-        value: 3306
+        value: 5432
       - key: DB_DATABASE
-        value: YOUR_DB_NAME
+        value: drss
       - key: DB_USERNAME
-        value: YOUR_DB_USER
+        value: sendev
       - key: DB_PASSWORD
-        value: YOUR_DB_PASSWORD
+        value: qiBMCfYInxTOV03Hm7VMk68FPt1tKN3V
     disk:
       name: persistent-storage
       mountPath: /var/storage
       sizeGB: 1
+    ports:
+      - port: 10000
+        protocol: http
