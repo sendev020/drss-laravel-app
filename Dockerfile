@@ -1,51 +1,35 @@
-# Étape 1 : Image de base PHP avec extensions nécessaires
+# Utilise une image officielle PHP avec extensions nécessaires
 FROM php:8.2-fpm
 
-# Installer les dépendances système
+# Installation des dépendances système
 RUN apt-get update && apt-get install -y \
-    build-essential \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev \
-    zip \
-    unzip \
-    curl \
-    git \
-    libzip-dev \
-    libpq-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    libmcrypt-dev \
-    vim \
-    && docker-php-ext-install pdo pdo_mysql zip mbstring exif pcntl bcmath gd
+    git unzip curl libzip-dev zip \
+    && docker-php-ext-install zip pdo pdo_mysql
 
-# Installer Composer
-COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
+# Installe Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Définir le répertoire de travail
+# Créer le dossier de l'app
 WORKDIR /var/www
 
-# Copier tous les fichiers de l'application
+# Copier le contenu de l'application dans le conteneur
 COPY . .
 
-# Installer les dépendances PHP de Laravel
+# Copie un fichier .env.example en .env SI tu ne le fournis pas déjà dans ton projet
+RUN cp .env.example .env
+
+# Installer les dépendances PHP
 RUN composer install --no-dev --optimize-autoloader
 
-# Donner les permissions nécessaires
-RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache \
-    && chmod -R 775 /var/www/storage /var/www/bootstrap/cache
-
-# Générer la clé d'application Laravel
+# Générer la clé Laravel
 RUN php artisan key:generate
 
-# Créer le lien symbolique vers public/storage
-RUN php artisan storage:link || true
+# Créer le lien symbolique vers storage
+RUN php artisan storage:link
 
-# Lancer les migrations en mode production
-RUN php artisan migrate --force || true
-
-# Exposer le port 8000
+# Exposer le port (utile pour render/startCommand)
 EXPOSE 8000
 
-# Commande de démarrage
+# Lancer Laravel
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+
