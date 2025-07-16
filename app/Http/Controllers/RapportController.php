@@ -121,31 +121,20 @@ public function edit(Rapport $rapport)
     {
         return view('rapports.edit', compact('rapport'));
     }
-public function update(Request $request, $id)
-{
-    $rapport = Rapport::findOrFail($id);
+ public function update(Request $request, Rapport $rapport)
+    {
+        $validated = $request->validate([
+            'titre' => 'required|string|max:255',
+        ]);
 
-    $request->validate([
-        'titre' => 'required|string|max:255',
-        'fichier' => 'nullable|file|mimes:pdf,doc,docx,ppt,pptx,xls,xlsx|max:10240', // max 10 Mo
-    ]);
-
-    $rapport->titre = $request->input('titre');
-
-    if ($request->hasFile('fichier')) {
-        // Supprimer l'ancien fichier si présent
-        if ($rapport->fichier && Storage::disk('public')->exists('rapports/' . $rapport->fichier)) {
-            Storage::disk('public')->delete('rapports/' . $rapport->fichier);
+        if ($request->hasFile('fichier')) {
+            $path = $request->file('fichier')->store('rapports', 'public');
+            $validated['fichier'] = $path;
         }
 
-        // Enregistrer le nouveau fichier
-        $fichierPath = $request->file('fichier')->store('rapports', 'public');
-        $rapport->fichier = basename($fichierPath); // on ne stocke que le nom
+        $rapport->update($validated);
+
+        return redirect()->route('rapports.index')->with('success', 'Rapport modifié avec succès.');
     }
-
-    $rapport->save();
-
-    return redirect()->route('rapports.index')->with('success', 'Rapport mis à jour avec succès.');
-}
 
 }

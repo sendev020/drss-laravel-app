@@ -67,6 +67,8 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::resource('rapports', RapportController::class);
+    Route::get('/rapport', [RapportController::class, 'edit'])->name('rapport.edit');
+    Route::patch('/rapport', [RapportController::class, 'update'])->name('rapport.update');
     Route::patch('rapports/{rapport}/archiver', [RapportController::class, 'archiver'])->name('rapports.archiver');
     Route::patch('rapports/{rapport}/restaurer', [RapportController::class, 'restaurer'])->name('rapports.restaurer');
     Route::get('rapports/{id}/download', [RapportController::class, 'download'])->name('rapports.download');
