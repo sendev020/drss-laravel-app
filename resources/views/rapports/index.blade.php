@@ -36,9 +36,6 @@
                     <td>{{ $rapport->titre }}</td>
                     <td>
                         <a href="{{ asset('storage/' . $rapport->fichier) }}" target="_blank">Voir</a>
-                        <a href="{{ route('rapports.edit', $rapport->id) }}" class="btn btn-sm btn-warning">
-        <i class="bi bi-pencil-square"></i> Modifier
-    </a>
                     </td>
                     <td>
                         @if(!$rapport->archived)
@@ -55,11 +52,11 @@
                             </form>
                         @endif
                         <form action="{{ route('rapports.destroy', $rapport) }}" method="POST" onsubmit="return confirm('Voulez-vous vraiment supprimer ce rapport ?');" class="d-inline">
-    @csrf
-    @method('DELETE')
-    <button type="submit" class="btn btn-sm btn-danger">Supprimer</button>
-</form>
-
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-sm btn-danger">Supprimer</button>
+                        </form>
+                        <a href="{{ route('rapports.edit', $rapport) }}" class="btn btn-sm btn-warning"> Modifier</a>
                     </td>
                 </tr>
             @endforeach
