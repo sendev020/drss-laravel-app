@@ -117,4 +117,35 @@ public function destroy(Rapport $rapport)
 
     return redirect()->route('rapports.index')->with('success', 'Rapport supprimé avec succès.');
 }
+public function edit(Rapport $rapport)
+    {
+        return view('rapports.edit', compact('rapport'));
+    }
+public function update(Request $request, $id)
+{
+    $rapport = Rapport::findOrFail($id);
+
+    $request->validate([
+        'titre' => 'required|string|max:255',
+        'fichier' => 'nullable|file|mimes:pdf,doc,docx,ppt,pptx,xls,xlsx|max:10240', // max 10 Mo
+    ]);
+
+    $rapport->titre = $request->input('titre');
+
+    if ($request->hasFile('fichier')) {
+        // Supprimer l'ancien fichier si présent
+        if ($rapport->fichier && Storage::disk('public')->exists('rapports/' . $rapport->fichier)) {
+            Storage::disk('public')->delete('rapports/' . $rapport->fichier);
+        }
+
+        // Enregistrer le nouveau fichier
+        $fichierPath = $request->file('fichier')->store('rapports', 'public');
+        $rapport->fichier = basename($fichierPath); // on ne stocke que le nom
+    }
+
+    $rapport->save();
+
+    return redirect()->route('rapports.index')->with('success', 'Rapport mis à jour avec succès.');
+}
+
 }

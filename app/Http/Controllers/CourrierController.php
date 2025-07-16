@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Exports\CourriersExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Storage;
 
 class CourrierController extends Controller
 {
@@ -89,16 +90,43 @@ class CourrierController extends Controller
 
         return redirect()->route('courriers.index')->with('success', 'Courrier modifié avec succès.');
     }
-public function exportExcel()
-{
-    return Excel::download(new CourriersExport, 'courriers.xlsx');
-}
-public function exportPDF()
-{
-    $courriers = Courrier::all();
-    $pdf = Pdf::loadView('courriers.pdf', compact('courriers'));
-    return $pdf->download('courriers.pdf');
-}
+    public function exportExcel()
+    {
+        return Excel::download(new CourriersExport, 'courriers.xlsx');
+    }
+    public function exportPDF()
+    {
+        $courriers = Courrier::all();
+        $pdf = Pdf::loadView('courriers.pdf', compact('courriers'));
+        return $pdf->download('courriers.pdf');
+    }
 
+//     public function destroy(Courrier $courrier)
+// {
+//     // Supprimer le fichier du stockage si il existe
+//     if ($courrier->fichier && Storage::disk('public')->exists($courrier->fichier)) {
+//         Storage::disk('public')->delete($courrier->fichier);
+//     }
+
+//     // Supprimer l'entrée en base
+//     $courrier->delete();
+
+//     return redirect()->route('courriers.index')->with('success', 'Rapport supprimé avec succès.');
+// }
+
+    public function destroy($id)
+{
+    $courrier = Courrier::findOrFail($id);
+
+    // Supprimer le fichier associé s’il existe
+    if ($courrier->fichier && Storage::disk('public')->exists($courrier->fichier)) {
+        Storage::disk('public')->delete($courrier->fichier);
+    }
+
+    // Supprimer le courrier de la base de données
+    $courrier->delete();
+
+    return redirect()->route('courriers.index')->with('success', 'Courrier supprimé avec succès.');
+}
 }
 

@@ -36,6 +36,9 @@
                     <td>{{ $rapport->titre }}</td>
                     <td>
                         <a href="{{ asset('storage/' . $rapport->fichier) }}" target="_blank">Voir</a>
+                        <a href="{{ route('rapports.edit', $rapport->id) }}" class="btn btn-sm btn-warning">
+        <i class="bi bi-pencil-square"></i> Modifier
+    </a>
                     </td>
                     <td>
                         @if(!$rapport->archived)
