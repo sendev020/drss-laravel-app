@@ -38,7 +38,8 @@ public static function totalParTypeEtPersonnel($personnelId, $type)
 {
     return self::where('personnel_id', $personnelId)
         ->where('type', $type)
-        ->sum(\DB::raw("DATEDIFF(COALESCE(date_fin, date_debut), date_debut) + 1"));
+        ->selectRaw('SUM((COALESCE(date_fin, date_debut) - date_debut + 1))::int as total')
+        ->value('total');
 }
 
 }
