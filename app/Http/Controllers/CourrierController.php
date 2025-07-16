@@ -101,19 +101,6 @@ class CourrierController extends Controller
         return $pdf->download('courriers.pdf');
     }
 
-//     public function destroy(Courrier $courrier)
-// {
-//     // Supprimer le fichier du stockage si il existe
-//     if ($courrier->fichier && Storage::disk('public')->exists($courrier->fichier)) {
-//         Storage::disk('public')->delete($courrier->fichier);
-//     }
-
-//     // Supprimer l'entrée en base
-//     $courrier->delete();
-
-//     return redirect()->route('courriers.index')->with('success', 'Rapport supprimé avec succès.');
-// }
-
     public function destroy($id)
 {
     $courrier = Courrier::findOrFail($id);

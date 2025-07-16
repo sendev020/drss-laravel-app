@@ -8,12 +8,12 @@ use App\Http\Controllers\RapportController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\PersonnelController;
-use App\Models\Courrier;
 use App\Http\Controllers\SuiviPersonnelController;
+use App\Models\Courrier;
 
 /*
 |--------------------------------------------------------------------------
-| Routes publiques
+| Page d'accueil publique
 |--------------------------------------------------------------------------
 */
 
@@ -37,7 +37,15 @@ Route::get('/dashboard', function () {
 
 /*
 |--------------------------------------------------------------------------
-| Gestion du profil (auth requis)
+| Authentification
+|--------------------------------------------------------------------------
+*/
+
+require __DIR__.'/auth.php';
+
+/*
+|--------------------------------------------------------------------------
+| Profil utilisateur (auth requis)
 |--------------------------------------------------------------------------
 */
 
@@ -67,16 +75,15 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::resource('rapports', RapportController::class);
-    Route::get('/rapport', [RapportController::class, 'edit'])->name('rapport.edit');
-    Route::patch('/rapport', [RapportController::class, 'update'])->name('rapport.update');
+
     Route::patch('rapports/{rapport}/archiver', [RapportController::class, 'archiver'])->name('rapports.archiver');
     Route::patch('rapports/{rapport}/restaurer', [RapportController::class, 'restaurer'])->name('rapports.restaurer');
-    Route::get('rapports/{id}/download', [RapportController::class, 'download'])->name('rapports.download');
+    Route::get('rapports/{rapport}/download', [RapportController::class, 'download'])->name('rapports.download');
 });
 
 /*
 |--------------------------------------------------------------------------
-| Utilisateurs (liste simple, auth requis)
+| Gestion des utilisateurs simples (auth requis)
 |--------------------------------------------------------------------------
 */
 
@@ -84,7 +91,7 @@ Route::middleware('auth')->get('/users', [UserController::class, 'index'])->name
 
 /*
 |--------------------------------------------------------------------------
-| Routes Admin (role:admin requis)
+| Administration (admin seulement)
 |--------------------------------------------------------------------------
 */
 
@@ -97,29 +104,15 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
 
 /*
 |--------------------------------------------------------------------------
-| Gestion du personnel (role:admin requis)
+| Gestion du personnel (auth requis)
 |--------------------------------------------------------------------------
 */
 
-// Gestion du personnel (auth requis uniquement, pas besoin d'être admin)
 Route::middleware(['auth'])->group(function () {
     Route::resource('personnels', PersonnelController::class);
-});
+    Route::get('personnels/export/pdf', [PersonnelController::class, 'exportPdf'])->name('personnels.export.pdf');
+    Route::get('personnels/export/excel', [PersonnelController::class, 'exportExcel'])->name('personnels.export.excel');
 
-Route::middleware('auth')->group(function () {
     Route::resource('suivis', SuiviPersonnelController::class);
+    Route::get('suivis/export/cumuls-pdf', [SuiviPersonnelController::class, 'exportCumulsPDF'])->name('suivis.export.cumuls');
 });
-
-Route::get('personnels/export/pdf', [App\Http\Controllers\PersonnelController::class, 'exportPdf'])->name('personnels.export.pdf');
-Route::get('personnels/export/excel', [App\Http\Controllers\PersonnelController::class, 'exportExcel'])->name('personnels.export.excel');
-
-
-Route::get('suivis/export/cumuls-pdf', [SuiviPersonnelController::class, 'exportCumulsPDF'])->name('suivis.export.cumuls');
-
-/*
-|--------------------------------------------------------------------------
-| Authentification
-|--------------------------------------------------------------------------
-*/
-
-require __DIR__.'/auth.php';
