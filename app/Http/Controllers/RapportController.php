@@ -28,9 +28,15 @@ class RapportController extends Controller
         $this->middleware('auth');
 
         // Seuls les administrateurs peuvent archiver ou restaurer
-        $this->middleware('role:admin')->only(['archiver', 'restorer']);
+        $this->middleware('role:admin')->only(['archived', 'restore']);
     }
 
+    // Affiche la liste des rapports
+    // public function index()
+    // {
+    //     $rapports = Rapport::where('archived', false)->get();
+    //     return view('rapports.index', compact('rapports'));
+    // }
 
     // Formulaire de téléversement
     public function create()
@@ -66,9 +72,22 @@ class RapportController extends Controller
     // Télécharger un rapport
     public function download(Rapport $rapport)
     {
-        return Storage::download($rapport->fichier, $rapport->titre); //A revoir
+        return Storage::download($rapport->chemin_fichier, $rapport->titre);
     }
 
+    // Archiver un rapport
+    public function archived(Rapport $rapport)
+    {
+        $rapport->update(['archived' => true]);
+        return redirect()->back()->with('success', 'Rapport archivé.');
+    }
+
+    // Restaurer un rapport archivé
+    public function restore(Rapport $rapport)
+    {
+        $rapport->update(['archived' => false]);
+        return redirect()->back()->with('success', 'Rapport restauré.');
+    }
 
     public function archiver(Rapport $rapport)
 {
@@ -98,31 +117,4 @@ public function destroy(Rapport $rapport)
 
     return redirect()->route('rapports.index')->with('success', 'Rapport supprimé avec succès.');
 }
-public function edit(Rapport $rapport)
-    {
-        return view('rapports.edit', compact('rapport'));
-    }
-
-   public function update(Request $request, Rapport $rapport)
-{
-    $validated = $request->validate([
-        'titre' => 'required|string|max:255',
-        'fichier' => 'nullable|file|mimes:pdf,doc,docx,ppt,pptx,xls,xlsx',
-    ]);
-
-    if ($request->hasFile('fichier')) {
-        // Supprimer l'ancien fichier
-        if ($rapport->fichier && Storage::disk('public')->exists($rapport->fichier)) {
-            Storage::disk('public')->delete($rapport->fichier);
-        }
-
-        $path = $request->file('fichier')->store('rapports', 'public');
-        $validated['fichier'] = $path;
-    }
-
-    $rapport->update($validated);
-
-    return redirect()->route('rapports.index')->with('success', 'Rapport modifié avec succès.');
-}
-
 }

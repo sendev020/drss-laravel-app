@@ -8,12 +8,12 @@ use App\Http\Controllers\RapportController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\PersonnelController;
-use App\Http\Controllers\SuiviPersonnelController;
 use App\Models\Courrier;
+use App\Http\Controllers\SuiviPersonnelController;
 
 /*
 |--------------------------------------------------------------------------
-| Page d'accueil publique
+| Routes publiques
 |--------------------------------------------------------------------------
 */
 
@@ -37,15 +37,7 @@ Route::get('/dashboard', function () {
 
 /*
 |--------------------------------------------------------------------------
-| Authentification
-|--------------------------------------------------------------------------
-*/
-
-require __DIR__.'/auth.php';
-
-/*
-|--------------------------------------------------------------------------
-| Profil utilisateur (auth requis)
+| Gestion du profil (auth requis)
 |--------------------------------------------------------------------------
 */
 
@@ -75,15 +67,14 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::resource('rapports', RapportController::class);
-
     Route::patch('rapports/{rapport}/archiver', [RapportController::class, 'archiver'])->name('rapports.archiver');
     Route::patch('rapports/{rapport}/restaurer', [RapportController::class, 'restaurer'])->name('rapports.restaurer');
-    Route::get('rapports/{rapport}/download', [RapportController::class, 'download'])->name('rapports.download');
+    Route::get('rapports/{id}/download', [RapportController::class, 'download'])->name('rapports.download');
 });
 
 /*
 |--------------------------------------------------------------------------
-| Gestion des utilisateurs simples (auth requis)
+| Utilisateurs (liste simple, auth requis)
 |--------------------------------------------------------------------------
 */
 
@@ -91,7 +82,7 @@ Route::middleware('auth')->get('/users', [UserController::class, 'index'])->name
 
 /*
 |--------------------------------------------------------------------------
-| Administration (admin seulement)
+| Routes Admin (role:admin requis)
 |--------------------------------------------------------------------------
 */
 
@@ -104,15 +95,29 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
 
 /*
 |--------------------------------------------------------------------------
-| Gestion du personnel (auth requis)
+| Gestion du personnel (role:admin requis)
 |--------------------------------------------------------------------------
 */
 
+// Gestion du personnel (auth requis uniquement, pas besoin d'être admin)
 Route::middleware(['auth'])->group(function () {
     Route::resource('personnels', PersonnelController::class);
-    Route::get('personnels/export/pdf', [PersonnelController::class, 'exportPdf'])->name('personnels.export.pdf');
-    Route::get('personnels/export/excel', [PersonnelController::class, 'exportExcel'])->name('personnels.export.excel');
-
-    Route::resource('suivis', SuiviPersonnelController::class);
-    Route::get('suivis/export/cumuls-pdf', [SuiviPersonnelController::class, 'exportCumulsPDF'])->name('suivis.export.cumuls');
 });
+
+Route::middleware('auth')->group(function () {
+    Route::resource('suivis', SuiviPersonnelController::class);
+});
+
+Route::get('personnels/export/pdf', [App\Http\Controllers\PersonnelController::class, 'exportPdf'])->name('personnels.export.pdf');
+Route::get('personnels/export/excel', [App\Http\Controllers\PersonnelController::class, 'exportExcel'])->name('personnels.export.excel');
+
+
+Route::get('suivis/export/cumuls-pdf', [SuiviPersonnelController::class, 'exportCumulsPDF'])->name('suivis.export.cumuls');
+
+/*
+|--------------------------------------------------------------------------
+| Authentification
+|--------------------------------------------------------------------------
+*/
+
+require __DIR__.'/auth.php';

@@ -52,11 +52,11 @@
                             </form>
                         @endif
                         <form action="{{ route('rapports.destroy', $rapport) }}" method="POST" onsubmit="return confirm('Voulez-vous vraiment supprimer ce rapport ?');" class="d-inline">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-sm btn-danger">Supprimer</button>
-                        </form>
-                        <a href="{{ route('rapports.edit', $rapport) }}" class="btn btn-sm btn-warning"> Modifier</a>
+    @csrf
+    @method('DELETE')
+    <button type="submit" class="btn btn-sm btn-danger">Supprimer</button>
+</form>
+
                     </td>
                 </tr>
             @endforeach
