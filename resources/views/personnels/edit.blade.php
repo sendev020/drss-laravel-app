@@ -47,7 +47,6 @@
     <input type="file" name="photo" class="form-control">
 </div>
 
-
         <button type="submit" class="btn btn-primary">Mettre à jour</button>
         <a href="{{ route('personnels.index') }}" class="btn btn-secondary">Annuler</a>
     </form>
