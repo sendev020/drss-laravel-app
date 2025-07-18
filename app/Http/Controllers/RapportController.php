@@ -31,13 +31,6 @@ class RapportController extends Controller
         $this->middleware('role:admin')->only(['archived', 'restore']);
     }
 
-    // Affiche la liste des rapports
-    // public function index()
-    // {
-    //     $rapports = Rapport::where('archived', false)->get();
-    //     return view('rapports.index', compact('rapports'));
-    // }
-
     // Formulaire de téléversement
     public function create()
     {
@@ -49,6 +42,8 @@ class RapportController extends Controller
 {
     $request->validate([
         'titre' => 'required|string|max:255',
+        'commentaire' => 'required|string',
+        'date' => 'required|date',
         'fichier' => 'required|file|mimes:pdf,doc,docx,ppt,pptx,xls,xlsx',
     ]);
 
@@ -117,4 +112,27 @@ public function destroy(Rapport $rapport)
 
     return redirect()->route('rapports.index')->with('success', 'Rapport supprimé avec succès.');
 }
+
+public function edit(Rapport $rapport)
+    {
+        return view('rapports.edit', compact('rapport'));
+    }
+
+    public function update(Request $request, Rapport $rapport)
+    {
+        $validated = $request->validate([
+            'titre' => 'required|in:recu,envoye',
+            'commentaire' => 'required|string',
+            'date' => 'required|date',
+        ]);
+
+        if ($request->hasFile('fichier')) {
+            $path = $request->file('fichier')->store('rapports', 'public');
+            $validated['fichier'] = $path;
+        }
+
+        $rapport->update($validated);
+
+        return redirect()->route('rapports.index')->with('success', 'Courrier modifié avec succès.');
+    }
 }

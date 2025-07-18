@@ -11,6 +11,16 @@
             <input type="text" name="titre" id="titre" class="form-control" required>
         </div>
 
+         <div class="mb-3">
+            <label for="commentaire" class="form-label">Commentaire</label>
+            <input type="text" name="commentaire" id="commentaire" class="form-control" required>
+        </div>
+
+         <div class="mb-3">
+            <label for="date" class="form-label">Date</label>
+            <input type="date" name="date" id="date" class="form-control" required>
+        </div>
+
         <div class="mb-3">
             <label for="fichier" class="form-label">Fichier</label>
             <input type="file" name="fichier" id="fichier" class="form-control" required>

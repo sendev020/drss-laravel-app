@@ -14,12 +14,12 @@ return new class extends Migration
         Schema::create('rapports', function (Blueprint $table) {
             $table->id();
             $table->string('titre');              // Nom donné au rapport
-        $table->string('filename');           // Nom du fichier stocké
-        $table->string('original_filename');  // Nom original uploadé
-        $table->string('type')->nullable();   // ex: pdf, docx, xlsx...
-        $table->timestamp('archived_at')->nullable();
+            $table->string('commentaire');           // Nom du fichier stocké
+            $table->date('date');  // Nom original uploadé
+            $table->string('type')->nullable();   // ex: pdf, docx, xlsx...
+            $table->timestamp('archived_at')->nullable();
             $table->timestamps();
-        });
+            });
     }
 
     /**

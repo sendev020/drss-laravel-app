@@ -9,6 +9,8 @@
 <div class="container">
     <div class="d-flex justify-content-between mb-3">
         <h1>Liste du personnel</h1>
+    </div>
+    <div>
         <a href="{{ route('personnels.create') }}" class="btn btn-success">+ Ajouter un agent</a>
     </div>
 
