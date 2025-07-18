@@ -37,7 +37,7 @@
         <div class="mb-3">
             <label for="date" class="form-label">Date</label>
             <input type="date" class="form-control" id="date" name="date"
-                   value="{{ old('date', \Carbon\Carbon::parse($courrier->date_reception)->format('Y-m-d')) }}"
+                   value="{{ old('date', \Carbon\Carbon::parse($rapport->date)->format('Y-m-d')) }}"
 >
         </div>
 

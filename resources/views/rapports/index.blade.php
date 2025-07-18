@@ -55,7 +55,7 @@
                                 <button class="btn btn-sm btn-primary" onclick="return confirm('Restaurer ce rapport ?')">Restaurer</button>
                             </form>
                         @endif
-                        <a href="{{ route('rapports.edit', $rapport) }}" class="btn btn-sm btn-warning">Modifier</a>
+                        <a href="{{ route('rapports.edit', $rapport) }}" class="btn btn-sm btn-info">Modifier</a>
                         <form action="{{ route('rapports.destroy', $rapport) }}" method="POST" onsubmit="return confirm('Voulez-vous vraiment supprimer ce rapport ?');" class="d-inline">
                         @csrf
                         @method('DELETE')
